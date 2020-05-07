@@ -1,0 +1,28 @@
+{
+  "name": "easy-print",
+  "version": "0.0.1",
+  "description": "pdd or cainiao print assembly api packageing",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/garrettzxd/easy-print.git"
+  },
+  "keywords": [
+    "print"
+  ],
+  "author": "garrett",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/garrettzxd/easy-print/issues"
+  },
+  "homepage": "https://github.com/garrettzxd/easy-print#readme",
+  "dependencies": {},
+  "devDependencies": {
+    "eslint": "^6.8.0",
+    "eslint-config-airbnb-base": "^14.1.0",
+    "eslint-plugin-import": "^2.20.2"
+  }
+}
