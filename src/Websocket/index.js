@@ -1,6 +1,6 @@
 import getTypeOfData from '../util/getTypeOfData';
 
-export default class websocket {
+export default class Websocket {
   constructor(url) {
     this.socket = null;
     this.isConnect = false;

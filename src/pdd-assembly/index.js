@@ -8,21 +8,26 @@ import {
   PRINT_COMMAND,
   GET_TASK_STATUS_COMMAND,
   GET_GLOBAL_CONFIG_COMMAND,
-  SET_GLOBAL_CONFIG_COMMAND, GET_PRINT_ASSEMBLY_VERSION,
+  SET_GLOBAL_CONFIG_COMMAND,
+  GET_PRINT_ASSEMBLY_VERSION,
 } from '../util/constants';
 
 export default class PddAssembly extends Websocket {
-  constructor(url) {
+  constructor({ url = '', ISVName = '', ERPId = '' } = {}) {
     super(url);
     this.printerList = [];
     this.defaultPrinter = '';
     this.version = '0';
+    this.ISVName = ISVName;
+    this.ERPId = ERPId;
     this.init();
   }
 
   async init() {
     await this.register();
-    this.receive(PddAssembly.assemblyData);
+    this.receive(PddAssembly.messageParsing);
+    this.getPrinters();
+    this.getVersion();
   }
 
   getPrinters() {
@@ -56,11 +61,14 @@ export default class PddAssembly extends Websocket {
   printCommit({
     printer = this.defaultPrinter,
     documents = [],
-    ISVName = '',
-    ERPId = '',
+    ISVName = this.ISVName,
+    ERPId = this.ERPId,
     isPreview = false,
   } = {}) {
-    if (!documents.length) console.error('Document is empty!');
+    if (!documents.length) {
+      console.error('Document is empty!');
+      return;
+    }
 
     const request = PddAssembly.getBaseRequest(PRINT_COMMAND);
     const extraConfig = {
@@ -104,7 +112,16 @@ export default class PddAssembly extends Websocket {
     };
   }
 
-  static assemblyData(data) {
-    console.log(data);
+  messageParsing({ data }) {
+    const { cmd } = data;
+
+    switch (cmd) {
+      case GET_PRINTERS_COMMAND:
+        this.printerList = data.printers;
+        this.defaultPrinter = data.defaultPrinter;
+        break;
+      default:
+        console.error('Unknown cmd');
+    }
   }
 }
