@@ -5,6 +5,36 @@ const pddAssembly = new PddAssembly({
 });
 
 console.log(pddAssembly.defaultPrinter);
-pddAssembly.setPrinterConfig({
+
+pddAssembly.printCommit({
   printer: '',
-});
+  documents: [{
+    documentID: '',
+    contents: [{
+      encryptedData: '',
+      signature: '',
+      ver: '',
+      templateUrl: '',
+      userid: '',
+      addData: {
+        sender: {
+          address: {
+            province: '',
+            city: '',
+            district: '',
+            town: '',
+            detail: '',
+          },
+          name: '',
+          phone: '',
+          mobile: '',
+        }
+      },
+    }, {
+      data: {
+        name: ''
+      },
+      templateURL: '',
+    }],
+  }]
+})

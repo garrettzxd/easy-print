@@ -1,3 +1,5 @@
+import PddEncryptionDocument from './types/pdd-document';
+
 export interface BaseParameter {
   printer: string;
 }
@@ -12,7 +14,7 @@ export interface SetPrinterConfig extends BaseParameter{
 }
 
 export interface PrintCommitParameter extends BaseParameter{
-  documents: any[];
+  documents: PddEncryptionDocument[];
   ISVName?: string;
   ERPId?: string;
   isPreview?: boolean;
