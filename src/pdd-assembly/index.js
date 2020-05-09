@@ -20,6 +20,12 @@ export default class PddAssembly extends Websocket {
     this.version = '0';
     this.ISVName = ISVName;
     this.ERPId = ERPId;
+    this.versionCallback = undefined;
+    this.getPrintConfigCallback = undefined;
+    this.printCommitCallback = undefined;
+    this.getTaskStatusCallback = undefined;
+    this.getGlobalConfigCallback = undefined;
+    this.setGlobalConfigCallback = undefined;
     this.init();
   }
 
@@ -35,9 +41,10 @@ export default class PddAssembly extends Websocket {
     this.send(request);
   }
 
-  getPrintConfig({ printer = this.defaultPrinter } = {}) {
+  getPrintConfig({ printer = this.defaultPrinter } = {}, callback) {
     const request = PddAssembly.getBaseRequest(GET_PRINTER_CONFIG_COMMAND);
     this.send({ ...request, printer });
+    this.getPrintConfigCallback = callback;
   }
 
   setPrinterConfig({
@@ -64,7 +71,7 @@ export default class PddAssembly extends Websocket {
     ISVName = this.ISVName,
     ERPId = this.ERPId,
     isPreview = false,
-  } = {}) {
+  } = {}, callback) {
     if (!documents.length) {
       console.error('Document is empty!');
       return;
@@ -82,26 +89,31 @@ export default class PddAssembly extends Websocket {
       },
     };
     this.send({ ...request, ...extraConfig });
+    this.printCommitCallback = callback;
   }
 
-  getTaskStatus({ taskIdList = [] } = {}) {
+  getTaskStatus({ taskIdList = [] } = {}, callback) {
     const request = PddAssembly.getBaseRequest(GET_TASK_STATUS_COMMAND);
     this.send({ ...request, taskID: taskIdList });
+    this.getTaskStatusCallback = callback;
   }
 
-  getGlobalConfig() {
+  getGlobalConfig(callback) {
     const request = PddAssembly.getBaseRequest(GET_GLOBAL_CONFIG_COMMAND);
     this.send(request);
+    this.getGlobalConfigCallback = callback;
   }
 
-  setGlobalConfig({ isFailedNotify = false } = {}) {
+  setGlobalConfig({ isFailedNotify = false } = {}, callback) {
     const request = PddAssembly.getBaseRequest(SET_GLOBAL_CONFIG_COMMAND);
     this.send({ ...request, TaskFailedNotify: isFailedNotify });
+    this.setGlobalConfigCallback = callback;
   }
 
-  getVersion() {
+  getVersion(callback) {
     const request = PddAssembly.getBaseRequest(GET_PRINT_ASSEMBLY_VERSION);
     this.send(request);
+    this.versionCallback = callback;
   }
 
   static getBaseRequest(cmd) {
@@ -114,11 +126,35 @@ export default class PddAssembly extends Websocket {
 
   messageParsing({ data }) {
     const { cmd } = data;
-
     switch (cmd) {
       case GET_PRINTERS_COMMAND:
         this.printerList = data.printers;
         this.defaultPrinter = data.defaultPrinter;
+        break;
+      case GET_PRINTER_CONFIG_COMMAND:
+        this.getPrintConfigCallback(data);
+        this.getPrintConfigCallback = undefined;
+        break;
+      case PRINT_COMMAND:
+        this.printCommitCallback(data);
+        this.printCommitCallback = undefined;
+        break;
+      case GET_TASK_STATUS_COMMAND:
+        this.getTaskStatusCallback(data);
+        this.getTaskStatusCallback = undefined;
+        break;
+      case GET_GLOBAL_CONFIG_COMMAND:
+        this.getGlobalConfigCallback(data);
+        this.getGlobalConfigCallback = undefined;
+        break;
+      case SET_GLOBAL_CONFIG_COMMAND:
+        this.setGlobalConfigCallback(data);
+        this.setGlobalConfigCallback = undefined;
+        break;
+      case GET_PRINT_ASSEMBLY_VERSION:
+        this.version = data.AppVersion;
+        this.versionCallback(data);
+        this.versionCallback = undefined;
         break;
       default:
         console.error('Unknown cmd');

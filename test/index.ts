@@ -6,6 +6,8 @@ const pddAssembly = new PddAssembly({
 
 console.log(pddAssembly.defaultPrinter);
 
+pddAssembly.getVersion((version) => {});
+
 pddAssembly.printCommit({
   printer: '',
   documents: [{

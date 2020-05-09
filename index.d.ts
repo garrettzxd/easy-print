@@ -1,4 +1,13 @@
 import PddEncryptionDocument from './types/pdd-document';
+import {
+  GetPrinterConfigResult,
+  SetPrinterConfigResult,
+  PrintResultNotify,
+  GetTaskStatusResult,
+  GetAssemblyGlobalConfigResult,
+  SetAssemblyGlobalConfigResult,
+  GetAssemblyVersionResult,
+} from './types/pdd-assembly-result';
 
 export interface BaseParameter {
   printer: string;
@@ -36,6 +45,8 @@ export interface PddAssemblyParameter {
 
 /** PinDuoDuo print assembly class */
 export declare class PddAssembly {
+  constructor(parameter: PddAssemblyParameter);
+
   printerList: string[];
 
   defaultPrinter: string;
@@ -46,19 +57,17 @@ export declare class PddAssembly {
 
   ERPId: string;
 
-  constructor(parameter: PddAssemblyParameter);
+  getPrintConfig: (config: GetPrinterConfig, callback?: (response: GetPrinterConfigResult) => void) => void;
 
-  getPrintConfig: (config: GetPrinterConfig) => void;
+  setPrinterConfig: (config: SetPrinterConfig, callback?: (response: SetPrinterConfigResult) => void) => void;
 
-  setPrinterConfig: (config: SetPrinterConfig) => void;
+  printCommit: (parameter: PrintCommitParameter, callback?: (response: PrintResultNotify) => void) => void;
 
-  printCommit: (parameter: PrintCommitParameter) => void;
+  getTaskStatus: (parameter: GetTaskStatusParameter, callback?: (response: GetTaskStatusResult) => void) => void;
 
-  getTaskStatus: (parameter: GetTaskStatusParameter) => void;
+  getGlobalConfig: (callback: (response: GetAssemblyGlobalConfigResult) => void) => void;
 
-  getGlobalConfig: () => void;
+  setGlobalConfig: (parameter: SetGlobalConfigParameter, callback?: (response: SetAssemblyGlobalConfigResult) => void) => void;
 
-  setGlobalConfig: (parameter: SetGlobalConfigParameter) => void;
-
-  getVersion: () => void;
+  getVersion: (callback: (response: GetAssemblyVersionResult) => void) => void;
 }
