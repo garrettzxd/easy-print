@@ -29,8 +29,8 @@ export default class PddAssembly extends Websocket {
     this.init();
   }
 
-  async init() {
-    await this.register(() => {
+  init() {
+    this.register(() => {
       this.getPrinters();
       this.getVersion();
     },
