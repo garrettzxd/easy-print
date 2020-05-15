@@ -7,26 +7,21 @@ export default class Websocket {
     this.url = url;
   }
 
-  register() {
-    return new Promise((resolve, reject) => {
-      this.socket = new WebSocket(this.url);
+  register(doneCallback, messagesCallback) {
+    this.socket = new WebSocket(this.url);
 
-      this.socket.addEventListener('open', (e) => {
-        this.isConnect = true;
-        resolve(e);
-      });
-
-      this.socket.addEventListener('error', (err) => {
-        this.isConnect = false;
-        reject(err);
-      });
-    });
-  }
-
-  receive(callback) {
     this.socket.addEventListener('message', (e) => {
       this.isConnect = true;
-      if (callback) callback(e);
+      if (messagesCallback) messagesCallback(e);
+    });
+
+    this.socket.addEventListener('open', () => {
+      this.isConnect = true;
+      if (doneCallback) doneCallback();
+    });
+
+    this.socket.addEventListener('error', () => {
+      this.isConnect = false;
     });
   }
 
@@ -35,10 +30,10 @@ export default class Websocket {
 
     if (type !== 'string') {
       try {
-        const dataString = JSON.stringify(data);
+        const dataString = JSON.stringify(data || {});
         this.socket.send(dataString);
       } catch (e) {
-        console.error('websocket send data can not parse to string');
+        console.error('websocket send data can not parse to string', e);
       }
     } else {
       this.socket.send(data);

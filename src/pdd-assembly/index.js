@@ -30,10 +30,11 @@ export default class PddAssembly extends Websocket {
   }
 
   async init() {
-    await this.register();
-    this.receive(PddAssembly.messageParsing);
-    this.getPrinters();
-    this.getVersion();
+    await this.register(() => {
+      this.getPrinters();
+      this.getVersion();
+    },
+    this.messageParsing.bind(this));
   }
 
   getPrinters() {
@@ -125,36 +126,40 @@ export default class PddAssembly extends Websocket {
   }
 
   messageParsing({ data }) {
-    const { cmd } = data;
+    console.log('messageParsing', this);
+    const jsonData = JSON.parse(data || {});
+    const { cmd } = jsonData;
     switch (cmd) {
       case GET_PRINTERS_COMMAND:
-        this.printerList = data.printers;
-        this.defaultPrinter = data.defaultPrinter;
+        this.printerList = jsonData.printers;
+        this.defaultPrinter = jsonData.defaultPrinter;
         break;
       case GET_PRINTER_CONFIG_COMMAND:
-        this.getPrintConfigCallback(data);
+        this.getPrintConfigCallback(jsonData);
         this.getPrintConfigCallback = undefined;
         break;
       case PRINT_COMMAND:
-        this.printCommitCallback(data);
+        this.printCommitCallback(jsonData);
         this.printCommitCallback = undefined;
         break;
       case GET_TASK_STATUS_COMMAND:
-        this.getTaskStatusCallback(data);
+        this.getTaskStatusCallback(jsonData);
         this.getTaskStatusCallback = undefined;
         break;
       case GET_GLOBAL_CONFIG_COMMAND:
-        this.getGlobalConfigCallback(data);
+        this.getGlobalConfigCallback(jsonData);
         this.getGlobalConfigCallback = undefined;
         break;
       case SET_GLOBAL_CONFIG_COMMAND:
-        this.setGlobalConfigCallback(data);
+        this.setGlobalConfigCallback(jsonData);
         this.setGlobalConfigCallback = undefined;
         break;
       case GET_PRINT_ASSEMBLY_VERSION:
-        this.version = data.AppVersion;
-        this.versionCallback(data);
-        this.versionCallback = undefined;
+        this.version = jsonData.AppVersion;
+        if (this.versionCallback) {
+          this.versionCallback(jsonData);
+          this.versionCallback = undefined;
+        }
         break;
       default:
         console.error('Unknown cmd');
