@@ -5,12 +5,14 @@
   "main": "index.js",
   "files": [
     "src",
+    "types",
     "index.js",
     "index.d.ts"
   ],
   "typings": "index.d.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "test:dev": "webpack-dev-server --inline --progress --config build/webpack.test.js"
   },
   "repository": {
     "type": "git",
@@ -27,8 +29,13 @@
   "homepage": "https://github.com/garrettzxd/easy-print#readme",
   "dependencies": {},
   "devDependencies": {
+    "babel-loader": "^8.1.0",
     "eslint": "^6.8.0",
     "eslint-config-airbnb-base": "^14.1.0",
-    "eslint-plugin-import": "^2.20.2"
+    "eslint-plugin-import": "^2.20.2",
+    "html-webpack-plugin": "^4.3.0",
+    "webpack": "^4.43.0",
+    "webpack-cli": "^3.3.11",
+    "webpack-dev-server": "^3.11.0"
   }
 }

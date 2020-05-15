@@ -3,7 +3,7 @@ const getTypeOfData = (data) => {
 
   if (type !== 'object') return type;
 
-  const realType = Object.prototype.toString().call(data).toLowerCase();
+  const realType = Object.prototype.toString.call(data).toLowerCase();
   const typeObject = {
     '[object object]': 'object',
     '[object array]': 'object',
