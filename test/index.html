@@ -4,10 +4,45 @@
     <meta charset="UTF-8">
     <title>print assembly</title>
 </head>
+<style>
+    .module{
+        margin-bottom: 20px;
+    }
+</style>
 <body>
     <div id="app">
         <h1>Print Assembly test!</h1>
-        <button id="getVersion">获取版本</button>
+        <div class="module">
+            <button id="getVersion">获取版本</button>
+            <div>
+                版本号：<span id="versionContent"></span>
+            </div>
+        </div>
+
+        <div class="module">
+            <button id="getPrinterList">获取打印机列表</button>
+            <div>
+                打印机列表：<span id="printerListContent"></span>
+            </div>
+            <div>
+                默认打印机：<span id="printerDefault"></span>
+            </div>
+        </div>
+
+        <div class="module">
+            <button id="getPrinterConfig">获取打印机配置</button>
+            配置：<span id="printerConfigContent"></span>
+        </div>
+
+        <div class="module">
+            <button id="setPrinterConfig">设置打印机配置</button>
+            设置结果：<span id="setConfigRes"></span>
+        </div>
+
+        <div class="module">
+            <button id="printButton">打印测试（默认打印机）</button>
+            打印结果：<span id="printResult"></span>
+        </div>
     </div>
 </body>
 </html>

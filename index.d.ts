@@ -20,6 +20,13 @@ export interface SetPrinterConfig extends BaseParameter{
   isPrintBottomLogo?: boolean;
   horizontalOffset?: number;
   verticalOffset?: number;
+  autoOrientation?: boolean;
+  autoPageSize?: boolean;
+  forceNoPageMargins?: boolean;
+  paperSize?: {
+    width: number;
+    height: number;
+  }
 }
 
 export interface PrintCommitParameter extends BaseParameter{

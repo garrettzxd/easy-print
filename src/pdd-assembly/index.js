@@ -6,6 +6,7 @@ import {
   GET_PRINTER_CONFIG_COMMAND,
   SET_PRINTER_CONFIG_COMMAND,
   PRINT_COMMAND,
+  GET_PRINT_RESULT_COMMAND,
   GET_TASK_STATUS_COMMAND,
   GET_GLOBAL_CONFIG_COMMAND,
   SET_GLOBAL_CONFIG_COMMAND,
@@ -22,6 +23,7 @@ export default class PddAssembly extends Websocket {
     this.ERPId = ERPId;
     this.versionCallback = undefined;
     this.getPrintConfigCallback = undefined;
+    this.setPrinterConfigCallback = undefined;
     this.printCommitCallback = undefined;
     this.getTaskStatusCallback = undefined;
     this.getGlobalConfigCallback = undefined;
@@ -54,7 +56,12 @@ export default class PddAssembly extends Websocket {
     isPrintBottomLogo = false,
     horizontalOffset = 0,
     verticalOffset = 0,
-  } = {}) {
+    height = 180,
+    width = 100,
+    autoOrientation = false,
+    autoPageSize = false,
+    forceNoPageMargins = true,
+  } = {}, callback) {
     const request = PddAssembly.getBaseRequest(SET_PRINTER_CONFIG_COMMAND);
     const printerConfig = {
       name: printer,
@@ -62,8 +69,16 @@ export default class PddAssembly extends Websocket {
       PrintBottomLogo: isPrintBottomLogo,
       horizontalOffset,
       verticalOffset,
+      autoOrientation,
+      autoPageSize,
+      forceNoPageMargins,
+      paperSize: {
+        width,
+        height,
+      },
     };
-    this.send({ ...request, ...printerConfig });
+    this.send({ ...request, printer: printerConfig });
+    this.setPrinterConfigCallback = callback;
   }
 
   printCommit({
@@ -126,7 +141,6 @@ export default class PddAssembly extends Websocket {
   }
 
   messageParsing({ data }) {
-    console.log('messageParsing', this);
     const jsonData = JSON.parse(data || {});
     const { cmd } = jsonData;
     switch (cmd) {
@@ -140,7 +154,16 @@ export default class PddAssembly extends Websocket {
           this.getPrintConfigCallback = undefined;
         }
         break;
+      case SET_PRINTER_CONFIG_COMMAND:
+        if (this.setPrinterConfigCallback) {
+          this.setPrinterConfigCallback(jsonData);
+          this.setPrinterConfigCallback = undefined;
+        }
+        break;
       case PRINT_COMMAND:
+        // do noting
+        break;
+      case GET_PRINT_RESULT_COMMAND:
         if (this.printCommitCallback) {
           this.printCommitCallback(jsonData);
           this.printCommitCallback = undefined;
