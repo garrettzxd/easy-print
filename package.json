@@ -1,5 +1,5 @@
 {
-  "name": "easy-print",
+  "name": "@titansaas/easy-print",
   "version": "0.0.1",
   "description": "pdd or cainiao print assembly api packageing",
   "main": "index.js",
