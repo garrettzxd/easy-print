@@ -135,24 +135,34 @@ export default class PddAssembly extends Websocket {
         this.defaultPrinter = jsonData.defaultPrinter;
         break;
       case GET_PRINTER_CONFIG_COMMAND:
-        this.getPrintConfigCallback(jsonData);
-        this.getPrintConfigCallback = undefined;
+        if (this.getPrintConfigCallback) {
+          this.getPrintConfigCallback(jsonData);
+          this.getPrintConfigCallback = undefined;
+        }
         break;
       case PRINT_COMMAND:
-        this.printCommitCallback(jsonData);
-        this.printCommitCallback = undefined;
+        if (this.printCommitCallback) {
+          this.printCommitCallback(jsonData);
+          this.printCommitCallback = undefined;
+        }
         break;
       case GET_TASK_STATUS_COMMAND:
-        this.getTaskStatusCallback(jsonData);
-        this.getTaskStatusCallback = undefined;
+        if (this.getTaskStatusCallback) {
+          this.getTaskStatusCallback(jsonData);
+          this.getTaskStatusCallback = undefined;
+        }
         break;
       case GET_GLOBAL_CONFIG_COMMAND:
-        this.getGlobalConfigCallback(jsonData);
-        this.getGlobalConfigCallback = undefined;
+        if (this.getGlobalConfigCallback) {
+          this.getGlobalConfigCallback(jsonData);
+          this.getGlobalConfigCallback = undefined;
+        }
         break;
       case SET_GLOBAL_CONFIG_COMMAND:
-        this.setGlobalConfigCallback(jsonData);
-        this.setGlobalConfigCallback = undefined;
+        if (this.setGlobalConfigCallback) {
+          this.setGlobalConfigCallback(jsonData);
+          this.setGlobalConfigCallback = undefined;
+        }
         break;
       case GET_PRINT_ASSEMBLY_VERSION:
         this.version = jsonData.AppVersion;
